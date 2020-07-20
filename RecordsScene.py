@@ -11,9 +11,9 @@ class RecordsScene:
     def update(self, user_input):
         self.manage_user_input(user_input)
 
-        font_regular = pygame.font.Font('static/Fonts/mini_pixel-7.ttf', 50)
-        font_large = pygame.font.Font('static/Fonts/mini_pixel-7.ttf', 70)
-        font_small = pygame.font.Font('static/Fonts/mini_pixel-7.ttf', 30)
+        font_regular = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 50)
+        font_large = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 70)
+        font_small = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 30)
         lines = get_all()
         lines.reverse()
 
