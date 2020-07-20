@@ -14,7 +14,7 @@ class Application:
 
         self.username = None
 
-        pygame.mixer.music.load('static/Sounds/background.ogg')
+        pygame.mixer.music.load('Static/Sounds/background.ogg')
         pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play(-1)
 
