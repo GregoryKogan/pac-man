@@ -40,7 +40,7 @@ class GameScene:
         self.score = 0
         self.lives = 3
 
-        start_sound = pygame.mixer.Sound('static/Sounds/game_start.ogg')
+        start_sound = pygame.mixer.Sound('Static/Sounds/game_start.ogg')
         start_sound.play()
 
     def update(self, user_input):
@@ -64,7 +64,7 @@ class GameScene:
             if self.ghosts[0].mode == "Normal":
                 self.death()
             else:
-                eat_ghost_sound = pygame.mixer.Sound('static/Sounds/eat_ghost.ogg')
+                eat_ghost_sound = pygame.mixer.Sound('Static/Sounds/eat_ghost.ogg')
                 eat_ghost_sound.play()
                 self.send_ghost_to_prison()
 
