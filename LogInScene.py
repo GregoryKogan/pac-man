@@ -7,10 +7,10 @@ class LogInScene:
         self.screen = pygame.Surface((1280, 720))
         self.nickname = ""
         self.done = False
-        self.font_header = pygame.font.Font('static/Fonts/PAC-FONT.ttf', 120)
-        self.font_sub_header = pygame.font.Font('static/Fonts/mini_pixel-7.ttf', 60)
-        self.font_regular = pygame.font.Font('static/Fonts/mini_pixel-7.ttf', 50)
-        self.font_small = pygame.font.Font('static/Fonts/mini_pixel-7.ttf', 30)
+        self.font_header = pygame.font.Font('Static/Fonts/PAC-FONT.ttf', 120)
+        self.font_sub_header = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 60)
+        self.font_regular = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 50)
+        self.font_small = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 30)
         self.render()
 
     def update(self):
