@@ -69,7 +69,7 @@ class GameScene:
                 self.send_ghost_to_prison()
 
         if len(self.food) == 0:
-            win_sound = pygame.mixer.Sound('static/Sounds/win.ogg')
+            win_sound = pygame.mixer.Sound('Static/Sounds/win.ogg')
             win_sound.play()
             make_a_record(self.username, self.score)
             self.setup("generated")
@@ -129,7 +129,7 @@ class GameScene:
         self.lives = 3
 
     def death(self):
-        death_sound = pygame.mixer.Sound('static/Sounds/death.ogg')
+        death_sound = pygame.mixer.Sound('Static/Sounds/death.ogg')
         death_sound.play()
 
         self.lives -= 1
@@ -145,10 +145,10 @@ class GameScene:
             self.setup("generated")
 
     def render_ui(self):
-        small_font = pygame.font.Font('static/Fonts/mini_pixel-7.ttf', 23)
-        regular_font = pygame.font.Font('static/Fonts/mini_pixel-7.ttf', 30)
-        regular_font_large = pygame.font.Font('static/Fonts/mini_pixel-7.ttf', 40)
-        header_font = pygame.font.Font('static/Fonts/PAC-FONT.ttf', 98)
+        small_font = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 23)
+        regular_font = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 30)
+        regular_font_large = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 40)
+        header_font = pygame.font.Font('Static/Fonts/PAC-FONT.ttf', 98)
         header = header_font.render("Pac---Man", True, color_white)
         score_text = regular_font_large.render("Score: " + str(self.score), True, color_white)
         lives_text = regular_font_large.render("Lives: " + str(self.lives), True, color_white)
@@ -224,11 +224,11 @@ class GameScene:
             j = food_piece.j
             if self.pacman.pos_y == i and self.pacman.pos_x == j:
                 if food_piece.type == "Energizer":
-                    energizer_sound = pygame.mixer.Sound('static/Sounds/energizer.ogg')
+                    energizer_sound = pygame.mixer.Sound('Static/Sounds/energizer.ogg')
                     energizer_sound.play()
                     self.scare_ghosts()
                 if len(self.food) % 4 == 0:
-                    eat_sound = pygame.mixer.Sound('static/Sounds/eating.ogg')
+                    eat_sound = pygame.mixer.Sound('Static/Sounds/eating.ogg')
                     eat_sound.play()
                 self.food.pop(ind)
                 self.score += 10
