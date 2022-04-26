@@ -143,14 +143,8 @@ class MapGenerator:
                 if map[i][j] == 0 and map[i + 1][j] == 0 and map[i][j + 1] == 0 and map[i + 1][j + 1] == 0:
                     fill_x = None
                     fill_y = None
-                    if i < 15:
-                        fill_y = 0
-                    else:
-                        fill_y = 1
-                    if j < 14:
-                        fill_x = 0
-                    else:
-                        fill_x = 1
+                    fill_y = 0 if i < 15 else 1
+                    fill_x = 0 if j < 14 else 1
                     final_y = i + fill_y
                     final_x = j + fill_x
                     map = mirror_change(map, final_y, final_x, 1)
@@ -181,11 +175,10 @@ class MapGenerator:
         return map
 
     def fill_pockets(self, map):
-        result = [[0 for j in range(len(map[0]))] for i in range(len(map))]
-        stack = []
+        result = [[0 for _ in range(len(map[0]))] for _ in range(len(map))]
         start = [15, 0]
-        stack.append(start)
-        while len(stack) > 0:
+        stack = [start]
+        while stack:
             current_cell = stack.pop(0)
             i = current_cell[0]
             j = current_cell[1]
@@ -241,28 +234,20 @@ class MapGenerator:
             mirrored_x[i].reverse()
         first_half = []
         for i in range(len(original)):
-            line = []
-            for j in range(len(original[0])):
-                line.append(original[i][j])
-            for j in range(len(original[0])):
-                line.append(mirrored_x[i][j])
+            line = [original[i][j] for j in range(len(original[0]))]
+            line.extend(mirrored_x[i][j] for j in range(len(original[0])))
             first_half.append(line)
         second_half = copy_2d_array(first_half)
         second_half.reverse()
-        result = []
-        for i in range(len(first_half)):
-            result.append(first_half[i])
+        result = list(first_half)
         result.append(middle_separation_line)
-        for i in range(len(second_half)):
-            result.append(second_half[i])
+        result.extend(second_half[i] for i in range(len(second_half)))
         return result
 
     def cut_out_14X16_piece(self, map):
         result = []
         for i in range(1, 16):
-            line = []
-            for j in range(1, 15):
-                line.append(map[i][j])
+            line = [map[i][j] for j in range(1, 15)]
             result.append(line)
         return result
 
@@ -280,17 +265,13 @@ class MapGenerator:
         return map
 
     def convert_to_thick_walls(self, maze):
-        result = []
         maze_2d = to_2d(maze, self.width, self.height)
 
-        first_line = [1 for i in range(self.width * 2 + 1)]
-        result.append(first_line)
-
+        first_line = [1 for _ in range(self.width * 2 + 1)]
+        result = [first_line]
         for i in range(self.height):
-            line_up = []
-            line_side = []
-            line_up.append(1)
-            line_side.append(1)
+            line_up = [1]
+            line_side = [1]
             for j in range(self.width):
                 line_side.append(0)
                 if maze_2d[i][j].wall_right:
@@ -316,7 +297,7 @@ class MapGenerator:
                 result.append(line_up)
             result.append(line_side)
 
-        last_line = [1 for i in range(self.width * 2 + 1)]
+        last_line = [1 for _ in range(self.width * 2 + 1)]
         result.append(last_line)
         return result
 
@@ -339,9 +320,7 @@ class MapGenerator:
 
         while not is_maze_completed(grid):
             current_cell.visited = True
-            next_cell = current_cell.get_next(grid, self.width, self.height)
-
-            if next_cell:
+            if next_cell := current_cell.get_next(grid, self.width, self.height):
                 stack.append(current_cell)
                 remove_wall(current_cell, next_cell)
                 current_cell = next_cell
@@ -370,55 +349,45 @@ class Cell:
         neighbor_down_index = get_index(self.i + 1, self.j, width, height)
         neighbor_left_index = get_index(self.i, self.j - 1, width, height)
 
-        if neighbor_up_index >= 0:
-            if not grid[neighbor_up_index].visited:
-                neighbors.append(grid[neighbor_up_index])
-        if neighbor_right_index >= 0:
-            if not grid[neighbor_right_index].visited:
-                neighbors.append(grid[neighbor_right_index])
-        if neighbor_down_index >= 0:
-            if not grid[neighbor_down_index].visited:
-                neighbors.append(grid[neighbor_down_index])
-        if neighbor_left_index >= 0:
-            if not grid[neighbor_left_index].visited:
-                neighbors.append(grid[neighbor_left_index])
+        if neighbor_up_index >= 0 and not grid[neighbor_up_index].visited:
+            neighbors.append(grid[neighbor_up_index])
+        if neighbor_right_index >= 0 and not grid[neighbor_right_index].visited:
+            neighbors.append(grid[neighbor_right_index])
+        if neighbor_down_index >= 0 and not grid[neighbor_down_index].visited:
+            neighbors.append(grid[neighbor_down_index])
+        if neighbor_left_index >= 0 and not grid[neighbor_left_index].visited:
+            neighbors.append(grid[neighbor_left_index])
 
-        if len(neighbors) > 0:
+        if neighbors:
             rand_index = random.randint(0, len(neighbors) - 1)
             return neighbors[rand_index]
         else:
             return None
 
 def is_maze_completed(grid):
-    flag = True
-    for c in grid:
-        if not c.visited:
-            flag = False
-    return flag
+    return all(c.visited for c in grid)
 
 
 def get_index(i, j, width, height):
-    if i < 0 or i >= height or j < 0 or j >= width:
-        return -1 #aka retrun false
-    return j + i * width
+    return -1 if i < 0 or i >= height or j < 0 or j >= width else j + i * width
 
 
 def remove_wall(cell_a, cell_b):
     shift_x = cell_a.j - cell_b.j
     shift_y = cell_a.i - cell_b.i
 
-    if shift_x == 1:
-        cell_a.wall_left = False
-        cell_b.wall_right = False
     if shift_x == -1:
         cell_a.wall_right = False
         cell_b.wall_left = False
-    if shift_y == 1:
-        cell_a.wall_up = False
-        cell_b.wall_down = False
+    elif shift_x == 1:
+        cell_a.wall_left = False
+        cell_b.wall_right = False
     if shift_y == -1:
         cell_a.wall_down = False
         cell_b.wall_up = False
+    elif shift_y == 1:
+        cell_a.wall_up = False
+        cell_b.wall_down = False
 
 
 def remove_random_wall(current_cell, grid, width, height):
@@ -441,49 +410,41 @@ def remove_random_wall(current_cell, grid, width, height):
     random_ind = random.randint(0, len(walls) - 1)
     removeable_wall = walls[random_ind]
 
-    if removeable_wall == 'U':
-        current_cell.wall_up = False
-        grid[neighbor_up_index].wall_down = False
-    if removeable_wall == 'R':
-        current_cell.wall_right = False
-        grid[neighbor_right_index].wall_left = False
     if removeable_wall == 'D':
         current_cell.wall_down = False
         grid[neighbor_down_index].wall_up = False
-    if removeable_wall == 'L':
+    elif removeable_wall == 'L':
         current_cell.wall_left = False
         grid[neighbor_left_index].wall_right = False
 
+    elif removeable_wall == 'R':
+        current_cell.wall_right = False
+        grid[neighbor_right_index].wall_left = False
+    elif removeable_wall == 'U':
+        current_cell.wall_up = False
+        grid[neighbor_up_index].wall_down = False
     return grid
 
 
 def to_2d(linear_array, width, height):
     result = []
     array_copy = copy_array(linear_array)
-    for i in range(height):
-        line = []
-        for j in range(width):
-            line.append(array_copy.pop(0))
+    for _ in range(height):
+        line = [array_copy.pop(0) for _ in range(width)]
         result.append(line)
     return result
 
 
 def copy_array(array):
-    result = []
-    for element in array:
-        result.append(element)
-    return result
+    return list(array)
 
 
 def copy_2d_array(array_2d):
-    result = []
-    for array in array_2d:
-        result.append(copy_array(array))
-    return result
+    return [copy_array(array) for array in array_2d]
 
 
 def count_passages_to_walls_ratio(map):
-    if map == None:
+    if map is None:
         return 0
 
     walls = 0
@@ -494,13 +455,11 @@ def count_passages_to_walls_ratio(map):
                 walls += 1
             if map[i][j] == 0:
                 passages += 1
-    ratio = passages / walls
-    return ratio
+    return passages / walls
 
 
 def count_neighbors(map, y, x):
-    result = map[y - 1][x] + map[y + 1][x] + map[y][x - 1] + map[y][x + 1]
-    return result
+    return map[y - 1][x] + map[y + 1][x] + map[y][x - 1] + map[y][x + 1]
 
 
 def inverse(map):
@@ -546,20 +505,13 @@ def count_dead_ends(map):
 
 
 def quality_check(map):
-    result = True
-
-    if map == None:
+    result = map is not None
+    if result and count_dead_ends(map) > 0:
         result = False
-
-    if result:
-        if count_dead_ends(map) > 0:
-            result = False
-    if result:
-        if count_thick_passages(map) > 0:
-            result = False
-    if result:
-        if count_passages_to_walls_ratio(map) < 0.8:
-            result = False
+    if result and count_thick_passages(map) > 0:
+        result = False
+    if result and count_passages_to_walls_ratio(map) < 0.8:
+        result = False
     return result
 
 map_generator = MapGenerator()
