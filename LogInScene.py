@@ -22,9 +22,8 @@ class LogInScene:
                         self.done = True
                     elif event.key == pygame.K_BACKSPACE:
                         self.nickname = self.nickname[:-1]
-                    else:
-                        if len(self.nickname) < 15:
-                            self.nickname += event.unicode
+                    elif len(self.nickname) < 15:
+                        self.nickname += event.unicode
             events = pygame.event.get()
         self.render()
 

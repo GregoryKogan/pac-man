@@ -151,8 +151,14 @@ class GameScene:
         regular_font_large = pygame.font.Font('Static/Fonts/mini_pixel-7.ttf', 40)
         header_font = pygame.font.Font('Static/Fonts/PAC-FONT.ttf', 98)
         header = header_font.render("Pac---Man", True, color_white)
-        score_text = regular_font_large.render("Score: " + str(self.score), True, color_white)
-        lives_text = regular_font_large.render("Lives: " + str(self.lives), True, color_white)
+        score_text = regular_font_large.render(
+            f"Score: {str(self.score)}", True, color_white
+        )
+
+        lives_text = regular_font_large.render(
+            f"Lives: {str(self.lives)}", True, color_white
+        )
+
         replay_default_text = regular_font.render("R + D -> replay on default map", True, color_white)
         replay_generated_text = regular_font.render("R + G -> replay on generated map", True, color_white)
         replay_text = regular_font.render("R + C -> replay on current map", True, color_white)
@@ -160,8 +166,14 @@ class GameScene:
         pause_text = regular_font.render("P     -> play/pause", True, color_white)
         escape_text = regular_font.render("Esc   -> quit game", True, color_white)
         paused_text = regular_font_large.render("PAUSED", True, color_white)
-        username_text = regular_font_large.render("Player: " + self.username, True, color_white)
-        high_score_text = regular_font_large.render("High: " + str(self.score_high), True, color_white)
+        username_text = regular_font_large.render(
+            f"Player: {self.username}", True, color_white
+        )
+
+        high_score_text = regular_font_large.render(
+            f"High: {str(self.score_high)}", True, color_white
+        )
+
         mute_music_text = None
         if self.music:
             mute_music_text = regular_font.render("M     -> mute music", True, color_white)
@@ -209,7 +221,7 @@ class GameScene:
         for ghost in self.ghosts:
             i = ghost.pos_y
             j = ghost.pos_x
-            if self.map[i][j] == 'U' or self.map[i][j] == 'g':
+            if self.map[i][j] in ['U', 'g']:
                 result += 1
         return result
 
@@ -260,11 +272,10 @@ class GameScene:
         return food_array
 
     def pacman_bumped_into_ghost(self):
-        result = False
-        for ghost in self.ghosts:
-            if self.pacman.pos_x == ghost.pos_x and self.pacman.pos_y == ghost.pos_y:
-                result = True
-        return result
+        return any(
+            self.pacman.pos_x == ghost.pos_x and self.pacman.pos_y == ghost.pos_y
+            for ghost in self.ghosts
+        )
 
     def update_gosts(self):
         blinky = self.ghosts[0]
@@ -319,12 +330,7 @@ class GameScene:
         pinky = Ghost("Pinky", width + 2 * qw, self.map, [sp_i, sp_j + 3], width)
         inky = Ghost("Inky", width + 2 * qw, self.map, [sp_i + 1, sp_j + 2], width)
         clyde = Ghost("Clyde", width + 2 * qw, self.map, [sp_i + 1, sp_j + 3], width)
-        ghosts = []
-        ghosts.append(blinky)
-        ghosts.append(pinky)
-        ghosts.append(inky)
-        ghosts.append(clyde)
-        return ghosts
+        return [blinky, pinky, inky, clyde]
 
 def get_render_lines(map, i, j):
     result = [False, False, False, False] #up - right - down - left

@@ -116,7 +116,7 @@ portal_entrance_left_converted = [
     [1, 0, 0, 0, 0, 0, 0],
 ]
 
-middle_separation_line = [0 for i in range(28)]
+middle_separation_line = [0 for _ in range(28)]
 
 color_white = (255, 255, 255)
 color_black = (0, 0, 0)

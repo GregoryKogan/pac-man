@@ -22,7 +22,7 @@ class PacMan:
         self.manage_speed()
         self.manage_position()
         self.screen.fill(color_transparent)
-        sprite_path = "Static/Sprites/Pacman/Pacman-" + self.get_sprite()
+        sprite_path = f"Static/Sprites/Pacman/Pacman-{self.get_sprite()}"
         sprite = pygame.image.load(sprite_path)
         self.screen.blit(sprite, (0, 0))
         # pygame.draw.circle(self.screen, color_yellow, (self.screen.get_width() // 2, self.screen.get_height() // 2), self.screen.get_width() // 2)
@@ -34,9 +34,9 @@ class PacMan:
         fazes = ["Closed", "Ajar", "Open", "Ajar"]
 
         if fazes[int(self.sprite_faze)] != "Closed":
-            return fazes[int(self.sprite_faze)] + "-" + self.direction_movement + ".png"
+            return f"{fazes[int(self.sprite_faze)]}-{self.direction_movement}.png"
         else:
-            return fazes[int(self.sprite_faze)] + ".png"
+            return f"{fazes[int(self.sprite_faze)]}.png"
 
     def manage_portals(self):
         self.update_pos()
@@ -55,42 +55,43 @@ class PacMan:
             self.screen_pos_y = self.cell_width * self.pos_y - self.cell_width // 4
 
     def manage_position(self):
-        if self.direction_movement == 'U':
-            self.screen_pos_y -= self.speed
-        if self.direction_movement == 'R':
-            self.screen_pos_x += self.speed
         if self.direction_movement == 'D':
             self.screen_pos_y += self.speed
-        if self.direction_movement == 'L':
+        elif self.direction_movement == 'L':
             self.screen_pos_x -= self.speed
+        elif self.direction_movement == 'R':
+            self.screen_pos_x += self.speed
+        elif self.direction_movement == 'U':
+            self.screen_pos_y -= self.speed
         self.align()
 
     def manage_speed(self):
         i = self.pos_y
         j = self.pos_x
-        if self.direction_movement == 'U':
-            if self.map[i - 1][j] != '#':
-                self.speed = 2
-            elif self.screen_pos_y < self.pos_y * self.cell_width - self.cell_width // 4:
-                self.screen_pos_y = self.pos_y * self.cell_width - self.cell_width // 4
-                self.speed = 0
-        if self.direction_movement == 'R':
-            if self.map[i][j + 1] != '#':
-                self.speed = 2
-            elif self.screen_pos_x > self.pos_x * self.cell_width - self.cell_width // 4:
-                self.screen_pos_x = self.pos_x * self.cell_width - self.cell_width // 4
-                self.speed = 0
         if self.direction_movement == 'D':
             if self.map[i + 1][j] != '#':
                 self.speed = 2
             elif self.screen_pos_y > self.pos_y * self.cell_width - self.cell_width // 4:
                 self.screen_pos_y = self.pos_y * self.cell_width - self.cell_width // 4
                 self.speed = 0
-        if self.direction_movement == 'L':
+        elif self.direction_movement == 'L':
             if self.map[i][j - 1] != '#':
                 self.speed = 2
             elif self.screen_pos_x < self.pos_x * self.cell_width - self.cell_width // 4:
                 self.screen_pos_x = self.pos_x * self.cell_width - self.cell_width // 4
+                self.speed = 0
+
+        elif self.direction_movement == 'R':
+            if self.map[i][j + 1] != '#':
+                self.speed = 2
+            elif self.screen_pos_x > self.pos_x * self.cell_width - self.cell_width // 4:
+                self.screen_pos_x = self.pos_x * self.cell_width - self.cell_width // 4
+                self.speed = 0
+        elif self.direction_movement == 'U':
+            if self.map[i - 1][j] != '#':
+                self.speed = 2
+            elif self.screen_pos_y < self.pos_y * self.cell_width - self.cell_width // 4:
+                self.screen_pos_y = self.pos_y * self.cell_width - self.cell_width // 4
                 self.speed = 0
 
     def manage_user_input(self, user_input):
@@ -107,23 +108,19 @@ class PacMan:
         if user_input[pygame.K_a]:
             self.direction_desired = 'L'
 
-        if self.direction_desired == 'U':
-            if self.map[i - 1][j] != '#':
-                self.direction_movement = self.direction_desired
-        if self.direction_desired == 'R':
-            if self.map[i][j + 1] != '#':
-                self.direction_movement = self.direction_desired
-        if self.direction_desired == 'D':
-            if self.map[i + 1][j] != '#':
-                self.direction_movement = self.direction_desired
-        if self.direction_desired == 'L':
-            if self.map[i][j - 1] != '#':
-                self.direction_movement = self.direction_desired
+        if self.direction_desired == 'U' and self.map[i - 1][j] != '#':
+            self.direction_movement = self.direction_desired
+        if self.direction_desired == 'R' and self.map[i][j + 1] != '#':
+            self.direction_movement = self.direction_desired
+        if self.direction_desired == 'D' and self.map[i + 1][j] != '#':
+            self.direction_movement = self.direction_desired
+        if self.direction_desired == 'L' and self.map[i][j - 1] != '#':
+            self.direction_movement = self.direction_desired
 
     def align(self):
-        if self.direction_movement == 'U' or self.direction_movement == 'D':
+        if self.direction_movement in ['U', 'D']:
             self.align_horizontal()
-        if self.direction_movement == 'R' or self.direction_movement == 'L':
+        if self.direction_movement in ['R', 'L']:
             self.align_vertical()
 
     def align_vertical(self):
