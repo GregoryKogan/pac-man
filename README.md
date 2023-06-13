@@ -1,4 +1,4 @@
-# Pac-Man
+# pac-man
 
 This is a Pac-Man replica with map generation made in python with pygame library
 
